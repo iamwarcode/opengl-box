@@ -5,6 +5,8 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
+#include <glm/glm.hpp>
+
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -5,5 +5,5 @@ smooth in vec3 Ocolor;
 
 void main() 
 { 
-   outputColor = vec4(Ocolor, 1.0); 
+   outputColor = vec4(1-Ocolor.r, 1-Ocolor.g, 1-Ocolor.b, 1.0); 
 }
