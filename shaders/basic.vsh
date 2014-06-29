@@ -11,5 +11,5 @@ smooth out vec3 Ocolor;
 void main() 
 { 
    Ocolor = color;
-   gl_Position = p*v*m*vec4(position, 1.0); 
+   gl_Position = vec4(position, 1.0); 
 }
