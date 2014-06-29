@@ -53,6 +53,24 @@ int main(int argc, char *argv[])
        0,0,1
     };
     
+    float text[] = {
+      0,0,
+      0,1,
+      1,0,
+      1,1
+    };
+    
+    GLuint tex;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    
+    int width, height;
+    unsigned char* image = SOIL_load_image("../textures/congruent_pentagon.png", &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,image);
+    
+    SOIL_free_image_data(image);
+    
+        
     glBindVertexArray(vao[0]);
     
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
@@ -66,6 +84,15 @@ int main(int argc, char *argv[])
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(text), text, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     glEnable(GL_DEPTH_TEST);
     while (1)
