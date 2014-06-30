@@ -126,26 +126,70 @@ int main(int argc, char *argv[])
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
-    glm::mat4 model;
     GLint m = glGetUniformLocation(program, "m");
+    GLint v = glGetUniformLocation(program, "v");
+    GLint p = glGetUniformLocation(program, "p");
+    
+    glm::mat4 model;
+    glm::mat4 view;
+    glm::mat4 proj;
+    
+    //model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+    //glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(model));
     
     
-  
-    float a = 0.0f;
+    
+    
+    
+    proj = glm::perspective(45.0f, 800.0f/600.0f, 1.0f, 10.0f);
+    glUniformMatrix4fv(p, 1, GL_FALSE, glm::value_ptr(proj));
+    
+    float a = 0.0;
+    int oldx, oldy;
+    oldx = oldy = 0;
+    float pitch, yaw;
+    float np, ny;
+    np = ny = 0.0;
     glEnable(GL_DEPTH_TEST);
     while (1)
     {
-        a += 0.001;
+       pitch=yaw=0;
+       
+        a += (1.0/SDL_GetTicks())*10.0f;
         if (SDL_PollEvent(&windowEvent))
         {
             if (windowEvent.type == SDL_QUIT) break;
+            if (windowEvent.type == SDL_MOUSEMOTION){
+              pitch = oldx - windowEvent.motion.x;
+              yaw = oldy - windowEvent.motion.y;
+              
+              oldx = windowEvent.motion.x;
+              oldy = windowEvent.motion.y;
+            
+            }
+            
+            
         }
         
         glClearColor(0.6, 0.4 ,0.7,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        model = glm::rotate(model, a, glm::vec3(0.0f, 1.0f, 1.0f));
+        view = glm::lookAt(
+          glm::vec3(5.0f, 0.0f, 5.0f),
+          glm::vec3(0.0f, 0.0f, 0.0f),
+          glm::vec3(0.0f, 1.0f, 0.0f)
+        );
+        glUniformMatrix4fv(v, 1, GL_FALSE, glm::value_ptr(view));
+        np = np-pitch;
+        ny = ny-yaw;
+        model = glm::rotate(model, -pitch, glm::vec3(0.0, 1.0f, 0.0));
+        
+        model = glm::rotate(model, -yaw, glm::vec3(1.0, 0.0f, 0.0));
         glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(model));
+        
+        model = glm::scale(model, glm::vec3(1.0f));
+        glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(model));
+        
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
