@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
             
             
         }
-        glClearColor(0.6, 0.4 ,0.7,1);
+        glClearColor(1,1,1,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         view = glm::lookAt(
