@@ -1,7 +1,9 @@
 #ifndef UTIL_H
 #define UTIL_H
+
 #define GLEW_STATIC
 #include <GL/glew.h>
+
 #include <SDL.h>
 #include <SDL_opengl.h>
 
