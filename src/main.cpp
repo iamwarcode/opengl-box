@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     glm::mat4 proj;
     
     
-    model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0 , -10.0f));
+    model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0 , 0.0f));
     glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(model));
     
     proj = glm::perspective(45.0f, 800.0f/600.0f, 1.0f, 50.0f);
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
     oldx = oldy = 0;
     float pitch, yaw;
     
-    glm::vec3 vdir = glm::vec3(0.0f,0.0f,-1.0f);
+    glm::vec3 vdir = glm::vec3(0.0f,0.0f, -10.0f);
     glm::vec3 posc = glm::vec3(0.0f,0.0f, 0.0f);
     while (1)
     {
@@ -148,8 +148,8 @@ int main(int argc, char *argv[])
               if(pitch > 100 || pitch < -100 || yaw > 100 || yaw < -100){
                   
               }else{
-                vdir = glm::mat3(glm::rotate(glm::mat4(1.0f) ,-(pitch*0.5f), glm::vec3(0.0f, 1.0f, 0.0f)))*vdir;
-                vdir = glm::mat3(glm::rotate(glm::mat4(1.0f) ,-(yaw*0.5f), glm::cross(vdir, glm::vec3(0.0f, 1.0f, 0.0f))))*vdir;
+                vdir = glm::mat3(glm::rotate(glm::mat4(1.0f) , (pitch*0.5f), glm::vec3(0.0f, 1.0f, 0.0f)))*vdir;
+                vdir = glm::mat3(glm::rotate(glm::mat4(1.0f) ,(yaw*0.5f), glm::cross(vdir,glm::vec3(0.0f, 1.0f, 0.0f))))*vdir;
               }
             }
             
@@ -175,8 +175,8 @@ int main(int argc, char *argv[])
         
         d.Clear(1.0f, 1.0f, 1.0f, 1.0f);
         view = glm::lookAt(
-          posc,
-          posc + vdir,
+          vdir,
+          posc*vdir,
           glm::vec3(0.0f, 1.0f, 0.0f)
         );
         glUniformMatrix4fv(v, 1, GL_FALSE, glm::value_ptr(view));
