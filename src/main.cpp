@@ -1,6 +1,8 @@
 #include <util.h>
 #include <display.h>
+#include <math.h>
 
+#define PI 3.13159265
 int main(int argc, char *argv[])
 {
     Display d(800, 600, "boom box");
@@ -11,103 +13,37 @@ int main(int argc, char *argv[])
     GLuint program = make_program(vs, fs);
     glUseProgram(program);
     
-    
-    int elements[] = {
-        0,  1,  2,      0,  2,  3,    // front
-        4,  5,  6,      4,  6,  7,    // back
-        8,  9,  10,     8,  10, 11,   // top
-        12, 13, 14,     12, 14, 15,   // bottom
-        16, 17, 18,     16, 18, 19,   // right
-        20, 21, 22,     20, 22, 23    // left
-    };
-    
-    float vertices[] = {
-      // Front face
-      -1.0, -1.0,  1.0,
-       1.0, -1.0,  1.0,
-       1.0,  1.0,  1.0,
-      -1.0,  1.0,  1.0,
-      
-      // Back face
-      -1.0, -1.0, -1.0,
-      -1.0,  1.0, -1.0,
-       1.0,  1.0, -1.0,
-       1.0, -1.0, -1.0,
-      
-      // Top face
-      -1.0,  1.0, -1.0,
-      -1.0,  1.0,  1.0,
-       1.0,  1.0,  1.0,
-       1.0,  1.0, -1.0,
-      
-      // Bottom face
-      -1.0, -1.0, -1.0,
-       1.0, -1.0, -1.0,
-       1.0, -1.0,  1.0,
-      -1.0, -1.0,  1.0,
-      
-      // Right face
-       1.0, -1.0, -1.0,
-       1.0,  1.0, -1.0,
-       1.0,  1.0,  1.0,
-       1.0, -1.0,  1.0,
-      
-      // Left face
-      -1.0, -1.0, -1.0,
-      -1.0, -1.0,  1.0,
-      -1.0,  1.0,  1.0,
-      -1.0,  1.0, -1.0
-    };
-    
-    float color[] = {
-      1.0,0.0,0.0,
-      1.0,0.0,0.0,
-      1.0,0.0,0.0,
-      1.0,0.0,0.0,
-      
-      0.0,1.0,0.0,
-      0.0,1.0,0.0,
-      0.0,1.0,0.0,
-      0.0,1.0,0.0,
-      
-      0.0,0.0,1.0,
-      0.0,0.0,1.0,
-      0.0,0.0,1.0,
-      0.0,0.0,1.0,
-      
-      1.0,1.0,0.0,
-      1.0,1.0,0.0,
-      1.0,1.0,0.0,
-      1.0,1.0,0.0,
-      
-      1.0,0.0,1.0,
-      1.0,0.0,1.0,
-      1.0,0.0,1.0,
-      1.0,0.0,1.0,
-      
-      0.0,1.0,1.0,
-      0.0,1.0,1.0,
-      0.0,1.0,1.0,
-      0.0,1.0,1.0
-    };
-    
+  float ve[1428];
+  int width  = 32;
+  int height = 16;
+  
+  float theta, phi;
+  int i, j, t, ntri, nvec;
+  int rad=1;
+  
+  for(t=0, j=1; j<height-1; j++){
+    for(i=0; i<width; i++){
+      theta = float(j)/(height-1) * PI;
+      phi = float(i)/(width-1)*2*PI;
+      ve[t++]   = sinf(theta)*cosf(phi);
+      ve[t++] = cosf(theta);
+      ve[t++] = -sinf(theta)*sinf(phi);    
+    }
+  }
     GLuint vao;
     GLuint vbo[3];
     glGenVertexArrays(1, &vao);
     glGenBuffers(3, vbo);
     
     glBindVertexArray(vao);
-  
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-    
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(ve), ve, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
     glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(ve), ve, GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
@@ -130,8 +66,9 @@ int main(int argc, char *argv[])
     oldx = oldy = 0;
     float pitch, yaw;
     
-    glm::vec3 vdir = glm::vec3(0.0f,0.0f, -10.0f);
+    glm::vec3 vdir = glm::vec3(0.0f,0.0f, -5.0f);
     glm::vec3 posc = glm::vec3(0.0f,0.0f, 0.0f);
+    glPointSize(1);
     while (1)
     {
        pitch=yaw=0;
@@ -182,7 +119,7 @@ int main(int argc, char *argv[])
         glUniformMatrix4fv(v, 1, GL_FALSE, glm::value_ptr(view));
         
         
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_POINTS, 0, 1428);
         d.SwapBuffers();
     }
     
