@@ -19,15 +19,15 @@ int main(int argc, char *argv[])
   
   float theta, phi;
   int i, j, t, ntri, nvec;
-  int rad=1;
+  int rad=10;
   
   for(t=0, j=1; j<height-1; j++){
     for(i=0; i<width; i++){
       theta = float(j)/(height-1) * PI;
       phi = float(i)/(width-1)*2*PI;
-      ve[t++]   = sinf(theta)*cosf(phi);
-      ve[t++] = cosf(theta);
-      ve[t++] = -sinf(theta)*sinf(phi);    
+      ve[t++]   = rad*sinf(theta)*cosf(phi);
+      ve[t++]   = rad*cosf(theta);
+      ve[t++]   = -rad*sinf(theta)*sinf(phi);    
     }
   }
     GLuint vao;
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     
     glm::vec3 vdir = glm::vec3(0.0f,0.0f, -5.0f);
     glm::vec3 posc = glm::vec3(0.0f,0.0f, 0.0f);
-    glPointSize(1);
+    glPointSize(2);
     while (1)
     {
        pitch=yaw=0;
@@ -93,16 +93,16 @@ int main(int argc, char *argv[])
             if (windowEvent.type == SDL_KEYDOWN){
               switch(windowEvent.key.keysym.sym){
                 case SDLK_w:
-                  posc +=  0.5f*vdir;
+                  vdir +=  0.5f*vdir;
                 break;
                 case SDLK_a:
-                  posc -=  0.5f*glm::cross(vdir, glm::vec3(0.0f, 1.0f, 0.0f));
+                  vdir -=  0.5f*glm::cross(vdir, glm::vec3(0.0f, 1.0f, 0.0f));
                 break;
                 case SDLK_s:
-                  posc -=  0.5f*vdir;
+                  vdir -=  0.5f*vdir;
                 break;
                 case SDLK_d:
-                  posc += 0.5f*glm::cross(vdir, glm::vec3(0.0f, 1.0f, 0.0f));
+                  vdir += 0.5f*glm::cross(vdir, glm::vec3(0.0f, 1.0f, 0.0f));
                 break;
               }
             }
